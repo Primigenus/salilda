@@ -1,0 +1,100 @@
+<head>
+  <title>The World of Salil Chowdhury</title>
+</head>
+
+<template name="layout">
+  <div id="page">
+    <h1>The World of Salil Chowdhury</h1>
+
+    <nav>
+      <a href="/">Home</a> |
+      <a href="/songs">Songs</a> |
+      <a href="/people">People</a> |
+      <a href="/about">About</a>
+    </nav>
+
+    {{> Template.dynamic template=body}}
+  </div>
+</template>
+
+<template name="home">
+  <h2>Home</h2>
+  <p>Welcome to the database!</p>
+</template>
+
+<template name="about">
+  <h2>About</h2>
+  <p>This is a searchable database for the <a href="http://salilda.com">World
+    of Salil Chowdhury</a> built with <a href="http://meteor.com">Meteor</a>.
+    </p>
+</template>
+
+<template name="search">
+  <div id="search">
+    <input type="search" placeholder="Enter a song title." value="{{currentFilter}}">
+  </div>
+</template>
+
+<template name="songs">
+  <h2>Songs ({{total}})</h2>
+
+  {{> search}}
+
+  <table>
+    <thead>
+      <tr>
+        <th><span>Title</span> {{{sortingBy 'title'}}}</th>
+        <th><span>Year</span> {{{sortingBy 'year'}}}</th>
+        <th><span>Language</span> {{{sortingBy 'language'}}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each song}}
+      <tr>
+        <th>
+          <a href="/song/{{_id}}">{{title}}</a>
+          {{#if filmName}}<span class="film-name">{{filmName}}</span>{{/if}}
+        </th>
+        <td>{{year}}</td>
+        <td>{{language}}</td>
+      </tr>
+      {{else}}
+      <tr class="no-results">
+        <td colspan="3">No results :(</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
+
+<template name="song">
+  {{#with song}}
+    <h2>{{title}}</h2>
+  {{/with}}
+</template>
+
+<template name="people">
+  <h2>People ({{total}})</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each person}}
+      <tr>
+        <td>
+          <a href="/person/{{_id}}">{{name}}</a><br>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
+
+<template name="person">
+  {{#with person}}
+    <h2>{{name}}</h2>
+  {{/with}}
+</template>

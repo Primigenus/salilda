@@ -1,0 +1,21 @@
+
+
+Songs
+  - _id
+  - Title
+  - Type: Film Song | Non-Film Song | Serial
+  - Year
+  - Language: Hindi | Bengali | Malayalam | Gujarati | Tamil | Telegu | Marathi | Oriya | Kannada
+  - Lyricist _id
+  - Singer _id
+  - Composer _id
+  - Visual media _id
+
+Visual Media
+  - _id
+  - Name
+  - Type: Film | Serial
+
+People
+  - _id
+  - Name

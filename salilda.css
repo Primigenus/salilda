@@ -1,0 +1,59 @@
+body {
+  font: 200 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #fec;
+  color: #900;
+}
+a {
+  color: #600;
+}
+a:hover {
+  color: #933;
+}
+
+table {
+  width: 100%;
+}
+tbody th {
+  text-align: left;
+  font-weight: normal;
+}
+thead th {
+  background: #f0f0f0;
+  padding: .5rem;
+  cursor: pointer;
+}
+thead th:hover {
+  background: #ddd;
+}
+tbody th, tbody td {
+  padding: .4rem;
+  border-bottom: solid 1px #ddd;
+}
+tbody tr.no-results td {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+#search {
+  margin: 1rem auto;
+  width: 300px;
+}
+#search input[type=search] {
+  font-size: 2rem;
+  padding: .5rem;
+  width: 300px;
+  border: solid 1px #ccc;
+}
+
+#page {
+  padding: 1rem;
+  margin: 2rem;
+  background-color: white;
+  box-shadow: 0 0 4px rgba(0,0,0,.4);
+}
+
+.film-name {
+  font-size: .8rem;
+  color: rgba(150,0,0,.5);
+}
