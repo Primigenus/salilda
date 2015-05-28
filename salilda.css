@@ -1,4 +1,5 @@
 body {
+  margin: 0;
   font: 200 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: #fec;
   color: #900;
@@ -8,6 +9,50 @@ a {
 }
 a:hover {
   color: #933;
+}
+
+#loading {
+  text-align: center;
+  font-size: 2rem;
+  margin: 4rem 0;
+  -webkit-animation: fadeIn ease .25s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-delay: .5s;
+}
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+#page {
+  padding: 1rem;
+  margin: 2rem;
+  background-color: white;
+  box-shadow: 0 0 4px rgba(0,0,0,.4);
+  -webkit-animation: slideIn ease .25s;
+  -webkit-animation-fill-mode: both;
+}
+
+@-webkit-keyframes slideIn {
+  from {
+    transform: rotateZ(2deg) translateX(200px);
+    opacity: 0;
+  }
+}
+
+header {
+  text-align: center;
+  background: #eda;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+#banner {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 table {
@@ -29,28 +74,56 @@ tbody th, tbody td {
   padding: .4rem;
   border-bottom: solid 1px #ddd;
 }
+tbody tr {
+}
 tbody tr.no-results td {
   padding: 1rem;
   text-align: center;
   font-size: 1.5rem;
 }
 
-#search {
-  margin: 1rem auto;
-  width: 300px;
+.headline {
+  text-align: center;
 }
-#search input[type=search] {
+.headline .num-songs {
   font-size: 2rem;
-  padding: .5rem;
-  width: 300px;
-  border: solid 1px #ccc;
+  font-weight: bold;
 }
 
-#page {
-  padding: 1rem;
-  margin: 2rem;
-  background-color: white;
-  box-shadow: 0 0 4px rgba(0,0,0,.4);
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.align-center {
+  align-items: center;
+  text-align: center;
+}
+
+.flex main {
+  width: 77%;
+}
+.flex aside {
+  width: 20%;
+}
+
+.filters {
+  list-style: none;
+  margin: 0; padding: 0;
+}
+.filters li {
+  border-bottom: solid 1px #eee;
+  padding: .5rem 0;
+}
+
+#search {
+  margin: 1rem 0;
+}
+#search input[type=search] {
+  width: 100%;
+  font-size: 2rem;
+  padding: .5rem;
+  display: block;
+  border: solid 1px #ccc;
 }
 
 .film-name {

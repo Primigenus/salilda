@@ -3,30 +3,42 @@
 </head>
 
 <template name="layout">
-  <div id="page">
-    <h1>The World of Salil Chowdhury</h1>
-
+  <header>
+    <div id="banner">The World of Salil Chowdhury</div>
     <nav>
       <a href="/">Home</a> |
       <a href="/songs">Songs</a> |
       <a href="/people">People</a> |
       <a href="/about">About</a>
     </nav>
-
+  </header>
+  {{#if subsReady}}
     {{> Template.dynamic template=body}}
-  </div>
+  {{else}}
+    <div id="loading">
+      <p>Loading...</p>
+    </div>
+  {{/if}}
 </template>
 
 <template name="home">
-  <h2>Home</h2>
-  <p>Welcome to the database!</p>
+  <div id="page">
+    <div class="headline">
+      <p>Welcome to the database!</p>
+      <p>There are currently</p>
+      <p><span class="num-songs">{{numSongs}}</span></p>
+      <p>songs.</p>
+    </div>
+  </div>
 </template>
 
 <template name="about">
-  <h2>About</h2>
-  <p>This is a searchable database for the <a href="http://salilda.com">World
-    of Salil Chowdhury</a> built with <a href="http://meteor.com">Meteor</a>.
-    </p>
+  <div id="page">
+    <h1>About</h1>
+    <p>This is a searchable database for the <a href="http://salilda.com">World
+      of Salil Chowdhury</a> built with <a href="http://meteor.com">Meteor</a>.
+      </p>
+  </div>
 </template>
 
 <template name="search">
@@ -36,65 +48,129 @@
 </template>
 
 <template name="songs">
-  <h2>Songs ({{total}})</h2>
-
-  {{> search}}
-
-  <table>
-    <thead>
-      <tr>
-        <th><span>Title</span> {{{sortingBy 'title'}}}</th>
-        <th><span>Year</span> {{{sortingBy 'year'}}}</th>
-        <th><span>Language</span> {{{sortingBy 'language'}}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each song}}
-      <tr>
-        <th>
-          <a href="/song/{{_id}}">{{title}}</a>
-          {{#if filmName}}<span class="film-name">{{filmName}}</span>{{/if}}
-        </th>
-        <td>{{year}}</td>
-        <td>{{language}}</td>
-      </tr>
+  <div id="page">
+    <div class="flex align-center">
+      {{#if prevPage}}
+      <a class="prev" href="/songs?page={{prevPage}}">&larr; previous page</a>
       {{else}}
-      <tr class="no-results">
-        <td colspan="3">No results :(</td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
+      <span class="prev">&larr; previous page</span>
+      {{/if}}
+      <span>
+        <h1>Songs</h1>
+        <p>
+          (Displaying {{total}} of {{totalNumSongs}})
+        </p>
+      </span>
+      {{#if nextPage}}
+      <a class="next" href="/songs?page={{nextPage}}">next page &rarr;</a>
+      {{/if}}
+    </div>
+
+    {{> search}}
+
+    <div class="flex">
+
+      <aside>
+        <h2>Filters</h2>
+        <ul class="filters">
+          <li><a href="/songs/bengali-basic-songs">Bengali Basic Songs</a></li>
+          <li><a href="/songs/mass-songs">Mass songs</a></li>
+          <li><a href="/songs/film-songs">Film songs</a></li>
+        </ul>
+      </aside>
+
+      <main id="results">
+        <table>
+          <thead>
+            <tr>
+              <th><span>Title</span> {{{sortingBy 'title'}}}</th>
+              <th><span>Year</span> {{{sortingBy 'year'}}}</th>
+              <th><span>Language</span> {{{sortingBy 'language'}}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each song}}
+            <tr>
+              <th>
+                <a href="/song/{{_id}}">{{title}}</a>
+                {{#if filmName}}<span class="film-name">{{filmName}}</span>{{/if}}
+              </th>
+              <td>{{year}}</td>
+              <td>{{language}}</td>
+            </tr>
+            {{else}}
+            <tr class="no-results">
+              <td colspan="3">No results :(</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </main>
+
+    </div>
+  </div>
+
 </template>
 
 <template name="song">
-  {{#with song}}
-    <h2>{{title}}</h2>
-  {{/with}}
+  <div id="page">
+    {{#with song}}
+      <h1>{{title}}</h1>
+      <p>Type: {{type}}</p>
+      <p>Year: {{year}}</p>
+      <p>Film name: {{filmName}}</p>
+      <p>Language: {{language}}</p>
+      <p>Lyricists:
+        {{#each lyricists}}
+          <a href="/person/{{_id}}">{{name}}</a>
+        {{/each}}
+      </p>
+      <p>Singers:
+        {{#each singers}}
+          <a href="/person/{{_id}}">{{name}}</a>
+        {{/each}}
+      </p>
+      <p>Composers:
+        {{#each composers}}
+          <a href="/person/{{_id}}">{{name}}</a>
+        {{/each}}
+      </p>
+    {{/with}}
+  </div>
 </template>
 
 <template name="people">
-  <h2>People ({{total}})</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each person}}
-      <tr>
-        <td>
-          <a href="/person/{{_id}}">{{name}}</a><br>
-        </td>
-      </tr>
-      {{/each}}
-    </tbody>
-  </table>
+  <div id="page">
+    <h1>People ({{total}})</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each person}}
+        <tr>
+          <td>
+            <a href="/person/{{_id}}">{{name}}</a><br>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <template name="person">
-  {{#with person}}
-    <h2>{{name}}</h2>
-  {{/with}}
+  <div id="page">
+    {{#with person}}
+      <h1>{{name}}</h1>
+    {{/with}}
+    <h2>Songs</h2>
+    <ul>
+      {{#each song}}
+        <li>{{title}}</li>
+      {{/each}}
+    </ul>
+  </div>
 </template>

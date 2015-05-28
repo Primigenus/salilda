@@ -1,14 +1,59 @@
-Meteor.publish("songs", function(id) {
-  if (id)
-    return Songs.find({_id: id});
-  return Songs.find({}, {sort: {title: 1}});
+Meteor.publish("song", function(id) {
+  return Songs.find({_id: id});
 });
 
-Meteor.publish("people", function(id) {
-  if (id)
-    return People.find({_id: id});
-  return People.find({}, {sort: {name: 1}});
+Meteor.publish("songsByPerson", function(personId) {
+  fields = {title: 1};
+  return Songs.find({
+    $or: [
+      {lyricists: {$elemMatch: {$eq: personId}}},
+      {composers: {$elemMatch: {$eq: personId}}},
+      {singers:   {$elemMatch: {$eq: personId}}}
+    ]
+  }, {fields: fields});
 });
+
+Meteor.publish("songs", function(id, page, filter) {
+  fields = {title: 1, filmName: 1, year: 1, language: 1};
+
+  if (_.isNumber(id))
+    return Songs.find({_id: id});
+
+  // search
+  if (_.isString(filter)) {
+    return Songs.find({ title: new RegExp(filter, "i") }, {
+      fields: fields,
+      sort: {title: 1},
+      limit: 50,
+      skip: _.isString(page) ? (parseInt(page) * 50) : 0
+    });
+  }
+
+  return Songs.find({}, {
+    fields: fields,
+    sort: {title: 1},
+    limit: 50,
+    skip: _.isString(page) ? (parseInt(page) * 50) : 0
+  });
+});
+
+Meteor.publish("songCount", function() {
+  return SongCount.find();
+});
+
+Meteor.publish("person", function(personId) {
+  return People.find({_id: personId});
+});
+
+Meteor.publish("people", function(ids) {
+  if (_.isArray(ids))
+    return People.find({_id: {$in: ids}}, {sort: {name: 1}});
+  else
+    return People.find({}, {sort: {name: 1}});
+});
+
+
+
 
 function getPersonNames(str) {
   var result = str;
@@ -22,6 +67,10 @@ function getPersonNames(str) {
       return name.replace(/^\s+|\s+$/g, '');
     }));
   }
+}
+
+function trimSongTitle(str) {
+  return str.replace(/^\s+|\s+$/g, '');
 }
 
 function getSongType(type) {
@@ -38,7 +87,9 @@ function getSongType(type) {
 }
 
 function getYear(year) {
+  console.log(year);
   switch (year.toLowerCase()) {
+    case "":
     case "unknown":
       return null;
     default:
@@ -55,9 +106,13 @@ function addPerson(name) {
 }
 
 Meteor.methods({
-  reimportFromSpreadsheet: function() {
+  empty: function() {
     Songs.remove({});
-    People.remove({})
+    People.remove({});
+  },
+  reimportSpreadsheet: function() {
+    Songs.remove({});
+    People.remove({});
 
     var data = Papa.parse(Assets.getText("spreadsheet.csv"), {
       header: true,
@@ -70,7 +125,7 @@ Meteor.methods({
         if (!data.song) return;
 
         var song = {
-          title: data.song,
+          title: trimSongTitle(data.song),
           type: getSongType(data.song_type),
           year: getYear(data.year),
           language: data.language
@@ -85,5 +140,10 @@ Meteor.methods({
         Songs.insert(song);
       }
     });
+
+    if (SongCount.findOne())
+      SongCount.update(SongCount.findOne()._id, {$set: {count: Songs.find().count()}});
+    else
+      SongCount.insert({count: Songs.find().count()});
   }
 });

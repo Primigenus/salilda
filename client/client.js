@@ -1,12 +1,15 @@
 
 Meteor.startup(function() {
   Session.setDefault("songFilter", "");
-})
+});
+
+Template.registerHelper("subsReady", function(){
+  return FlowRouter.subsReady();
+});
 
 var searchOnceEvery300ms = _.throttle(function(evt) {
   var value = evt.target.value;
-  if (!value || value.length > 3)
-    Session.set("songFilter", value);
+  Session.set("songFilter", value);
 }, 300);
 
 Template.search.events({
@@ -17,11 +20,22 @@ Template.search.helpers({
   currentFilter: function() {
     return Session.get("songFilter");
   }
-})
+});
+
+Template.home.helpers({
+  numSongs: function() {
+    var songCount = SongCount.findOne()
+    if (songCount)
+      return songCount.count;
+  }
+});
 
 Template.songs.onCreated(function() {
   this.sortBy = new ReactiveVar("title");
   this.sortOrder = new ReactiveVar(1);
+
+  var curPage = parseInt(FlowRouter.getQueryParam("page")) || 1;
+  this.currentPage = new ReactiveVar(curPage);
 })
 
 Template.songs.events({
@@ -31,10 +45,30 @@ Template.songs.events({
     var value = el.text().toLowerCase();
     template.sortOrder.set(template.sortOrder.get() * -1);
     template.sortBy.set(value);
+  },
+  'click .next': function(evt, template) {
+    template.currentPage.set(template.currentPage.get() + 1);
+  },
+  'click .prev': function(evt, template) {
+    var prevPage = Math.max(1, template.currentPage.get() - 1);
+    template.currentPage.set(prevPage);
   }
-})
+});
 
 Template.songs.helpers({
+  nextPage: function() {
+    return Template.instance().currentPage.get() + 1;
+  },
+  prevPage: function() {
+    var curPage = Template.instance().currentPage.get();
+    if (curPage > 1)
+      return Math.max(1, curPage - 1);
+  },
+  totalNumSongs: function() {
+    var songCount = SongCount.findOne()
+    if (songCount)
+      return songCount.count;
+  },
   song: function() {
     var filter = Session.get("songFilter");
     var selector = {};
@@ -53,15 +87,42 @@ Template.songs.helpers({
       return sortOrder == 1 ? "&uarr;" : "&darr;";
   },
   total: function() {
-    return Songs.find().count();
+    var curPage = Template.instance().currentPage.get();
+    if (curPage > 1) {
+      var start = 50 * (Template.instance().currentPage.get() - 1);
+      var end = start + Songs.find().count();
+      return start + " - " + end;
+    }
+    return "1 - 50";
+  },
+  year: function() {
+    return this.year || "--";
   }
 });
 
 Template.song.helpers({
   song: function() {
     return Songs.findOne();
+  },
+  lyricists: function() {
+    if (People.findOne())
+      return _.map(this.lyricists, function(id) {
+        return {_id: id, name: People.findOne(id).name};
+      });
+  },
+  singers: function() {
+    if (People.findOne())
+      return _.map(this.singers, function(id) {
+        return {_id: id, name: People.findOne(id).name};
+      });
+  },
+  composers: function() {
+    if (People.findOne())
+      return _.map(this.composers, function(id) {
+        return {_id: id, name: People.findOne(id).name};
+      });
   }
-})
+});
 
 Template.people.helpers({
   person: function() {
@@ -75,5 +136,8 @@ Template.people.helpers({
 Template.person.helpers({
   person: function() {
     return People.findOne();
+  },
+  song: function() {
+    return Songs.find();
   }
 })
