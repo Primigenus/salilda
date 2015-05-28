@@ -57,7 +57,18 @@ Template.songs.events({
 
 Template.songs.helpers({
   nextPage: function() {
-    return Template.instance().currentPage.get() + 1;
+    var totalSongs = SongCount.findOne().count;
+
+    var curPage = Template.instance().currentPage.get();
+    if (curPage > 1) {
+      var prevSongs = 50 * (Template.instance().currentPage.get() - 1);
+      var curSongs = prevSongs + Songs.find().count();
+    } else {
+      var curSongs = 50;
+    }
+    
+    if (curSongs < totalSongs)
+      return Template.instance().currentPage.get() + 1;
   },
   prevPage: function() {
     var curPage = Template.instance().currentPage.get();
