@@ -141,7 +141,9 @@
       <h1>{{title}}</h1>
       <p>Type: {{type}}</p>
       <p>Year: {{year}}</p>
-      <p>Film name: {{filmName}}</p>
+      {{#if filmName}}
+        <p>Film name: {{filmName}}</p>
+      {{/if}}
       <p>Language: {{language}}</p>
       <p>Lyricists:
         {{#each lyricists}}
