@@ -110,6 +110,27 @@
       </main>
 
     </div>
+
+    <p>
+      <div class="flex align-center">
+        {{#if prevPage}}
+        <a class="prev" href="/songs?page={{prevPage}}">&larr; previous page</a>
+        {{else}}
+        <span class="prev"></span>
+        {{/if}}
+        <span>
+          <p>
+            (Displaying {{total}} of {{totalNumSongs}})
+          </p>
+        </span>
+        {{#if nextPage}}
+        <a class="next" href="/songs?page={{nextPage}}">next page &rarr;</a>
+        {{else}}
+        <span class="next"></span>
+        {{/if}}
+      </div>
+    </p>
+
   </div>
 
 </template>
