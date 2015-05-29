@@ -57,7 +57,8 @@ Template.songs.events({
 
 Template.songs.helpers({
   nextPage: function() {
-    var totalSongs = SongCount.findOne().count;
+    // we're subtracting 50 from the total song count because there is a discrepency in the song count that has yet to be found
+    var totalSongs = SongCount.findOne().count - 50;
     var curSongs;
 
     var curPage = Template.instance().currentPage.get();
@@ -79,7 +80,8 @@ Template.songs.helpers({
   totalNumSongs: function() {
     var songCount = SongCount.findOne()
     if (songCount)
-      return songCount.count;
+      // we're subtracting 50 from the total song count because there is a discrepency in the song count that has yet to be found
+      return songCount.count - 50;
   },
   song: function() {
     var filter = Session.get("songFilter");
