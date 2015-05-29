@@ -140,7 +140,11 @@
     {{#with song}}
       <h1>{{title}}</h1>
       <p>Type: {{type}}</p>
-      <p>Year: {{year}}</p>
+      {{#if year}}
+        <p>Year: {{year}}</p>
+      {{else}}
+        <p>Year: Unknown</p>
+      {{/if}}
       {{#if filmName}}
         <p>Film name: {{filmName}}</p>
       {{/if}}
