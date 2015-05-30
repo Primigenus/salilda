@@ -26,7 +26,8 @@ Template.home.helpers({
   numSongs: function() {
     var songCount = SongCount.findOne()
     if (songCount)
-      return songCount.count;
+      // we're subtracting 50 from the total song count because there is a discrepency in the song count that has yet to be found
+      return songCount.count - 50;
   }
 });
 
