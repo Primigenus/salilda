@@ -1,36 +1,3 @@
-BlazeLayout.setRoot('body');
-
-Meteor.startup(function() {
-  Session.setDefault("songFilter", "");
-});
-
-Template.registerHelper("subsReady", function(){
-  return FlowRouter.subsReady();
-});
-
-var setSongFilterThrottled = _.throttle(function(evt) {
-  var value = evt.target.value;
-  Session.set("songFilter", value);
-}, 300);
-
-Template.search.events({
-  'keyup #search input': setSongFilterThrottled
-});
-
-Template.search.helpers({
-  currentFilter: function() {
-    return Session.get("songFilter");
-  }
-});
-
-Template.home.helpers({
-  numSongs: function() {
-    var songCount = SongCount.findOne();
-    if (songCount)
-      return songCount.count;
-  }
-});
-
 Template.songs.onCreated(function() {
   this.sortBy = new ReactiveVar("title");
   this.sortOrder = new ReactiveVar(1);
@@ -112,47 +79,5 @@ Template.songs.helpers({
   },
   year: function() {
     return this.year || "--";
-  }
-});
-
-Template.song.helpers({
-  song: function() {
-    return Songs.findOne();
-  },
-  lyricists: function() {
-    if (People.findOne())
-      return _.map(this.lyricists, function(id) {
-        return {_id: id, name: People.findOne(id).name};
-      });
-  },
-  singers: function() {
-    if (People.findOne())
-      return _.map(this.singers, function(id) {
-        return {_id: id, name: People.findOne(id).name};
-      });
-  },
-  composers: function() {
-    if (People.findOne())
-      return _.map(this.composers, function(id) {
-        return {_id: id, name: People.findOne(id).name};
-      });
-  }
-});
-
-Template.people.helpers({
-  person: function() {
-    return People.find({}, {sort: {name: 1}});
-  },
-  total: function() {
-    return People.find().count();
-  }
-});
-
-Template.person.helpers({
-  person: function() {
-    return People.findOne({_id: FlowRouter.getParam("id")});
-  },
-  song: function() {
-    return Songs.find();
   }
 });
