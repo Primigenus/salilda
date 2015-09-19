@@ -7,8 +7,8 @@
 meteor-platform
 harrison:papa-parse
 reactive-var
-meteorhacks:flow-router
 meteorhacks:subs-manager
 meteorhacks:fast-render
-meteorhacks:flow-layout
 stylus
+kadira:blaze-layout
+kadira:flow-router
