@@ -186,9 +186,7 @@
 
 <template name="person">
   <div id="page">
-    {{#with person}}
-      <h1>{{name}}</h1>
-    {{/with}}
+    <h1>{{person.name}}</h1>
     <h2>Songs</h2>
     <ul>
       {{#each song}}
