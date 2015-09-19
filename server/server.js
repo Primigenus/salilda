@@ -14,26 +14,18 @@ Meteor.publish("songsByPerson", function(personId) {
 });
 
 Meteor.publish("songs", function(id, page, filter) {
-  fields = {title: 1, filmName: 1, year: 1, language: 1};
-
   if (_.isNumber(id))
     return Songs.find({_id: id});
 
-  // search
-  if (_.isString(filter)) {
-    return Songs.find({ title: new RegExp(filter, "i") }, {
-      fields: fields,
-      sort: {title: 1},
-      limit: 50,
-      skip: _.isString(page) ? (parseInt(page) * 50) : 0
-    });
-  }
+  var pageSize = 50;
+  var skip = _.isString(page) ? Math.max(0, parseInt(page) * pageSize - 50) : 0;
+  var filterObj = _.isString(filter) ? { title: new RegExp(filter, "i") } : {};
 
-  return Songs.find({}, {
-    fields: fields,
+  return Songs.find(filterObj, {
+    fields: {title: 1, filmName: 1, year: 1, language: 1},
     sort: {title: 1},
-    limit: 50,
-    skip: _.isString(page) ? (parseInt(page) * 50) : 0
+    limit: pageSize,
+    skip: skip
   });
 });
 
@@ -42,10 +34,12 @@ Meteor.publish("songCount", function() {
 });
 
 Meteor.publish("person", function(personId) {
+  console.log("Publish person", personId);
   return People.find({_id: personId});
 });
 
 Meteor.publish("people", function(ids) {
+  console.log("Publish people", ids);
   if (_.isArray(ids))
     return People.find({_id: {$in: ids}}, {sort: {name: 1}});
   else
@@ -113,6 +107,7 @@ Meteor.methods({
   reimportSpreadsheet: function() {
     Songs.remove({});
     People.remove({});
+    SongCount.remove({});
 
     var data = Papa.parse(Assets.getText("spreadsheet.csv"), {
       header: true,

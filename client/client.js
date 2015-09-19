@@ -1,3 +1,4 @@
+BlazeLayout.setRoot('body');
 
 Meteor.startup(function() {
   Session.setDefault("songFilter", "");
@@ -7,13 +8,13 @@ Template.registerHelper("subsReady", function(){
   return FlowRouter.subsReady();
 });
 
-var searchOnceEvery300ms = _.throttle(function(evt) {
+var setSongFilterThrottled = _.throttle(function(evt) {
   var value = evt.target.value;
   Session.set("songFilter", value);
 }, 300);
 
 Template.search.events({
-  'keyup #search input': searchOnceEvery300ms
+  'keyup #search input': setSongFilterThrottled
 });
 
 Template.search.helpers({
@@ -24,7 +25,7 @@ Template.search.helpers({
 
 Template.home.helpers({
   numSongs: function() {
-    var songCount = SongCount.findOne()
+    var songCount = SongCount.findOne();
     if (songCount)
       return songCount.count;
   }
@@ -36,7 +37,7 @@ Template.songs.onCreated(function() {
 
   var curPage = parseInt(FlowRouter.getQueryParam("page")) || 1;
   this.currentPage = new ReactiveVar(curPage);
-})
+});
 
 Template.songs.events({
   'click thead th': function(evt, template) {
@@ -57,7 +58,9 @@ Template.songs.events({
 
 Template.songs.helpers({
   nextPage: function() {
-    var totalSongs = SongCount.findOne().count;
+    var songCount = SongCount.findOne();
+    if (!songCount) return;
+    var totalSongs = songCount.count;
     var curSongs;
 
     var curPage = Template.instance().currentPage.get();
@@ -77,7 +80,7 @@ Template.songs.helpers({
       return Math.max(1, curPage - 1);
   },
   totalNumSongs: function() {
-    var songCount = SongCount.findOne()
+    var songCount = SongCount.findOne();
     if (songCount)
       return songCount.count;
   },
@@ -88,7 +91,7 @@ Template.songs.helpers({
       var regex = new RegExp(filter, "i");
       selector = {title: regex};
     }
-    var sort = {}
+    var sort = {};
     sort[Template.instance().sortBy.get()] = Template.instance().sortOrder.get();
     return Songs.find(selector, {sort: sort});
   },
@@ -147,9 +150,9 @@ Template.people.helpers({
 
 Template.person.helpers({
   person: function() {
-    return People.findOne();
+    return People.findOne({_id: FlowRouter.getParam("id")});
   },
   song: function() {
     return Songs.find();
   }
-})
+});
