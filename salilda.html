@@ -2,6 +2,7 @@
   <title>The World of Salil Chowdhury</title>
 </head>
 
+
 <template name="layout">
   <header>
     <div id="banner">The World of Salil Chowdhury</div>
@@ -21,6 +22,7 @@
   {{/if}}
 </template>
 
+
 <template name="home">
   <div id="page">
     <div class="headline">
@@ -32,6 +34,7 @@
   </div>
 </template>
 
+
 <template name="about">
   <div id="page">
     <h1>About</h1>
@@ -41,11 +44,13 @@
   </div>
 </template>
 
+
 <template name="search">
   <div id="search">
     <input type="search" placeholder="Enter a song title." value="{{currentFilter}}">
   </div>
 </template>
+
 
 <template name="songs">
   <div id="page">
@@ -135,13 +140,20 @@
 
 </template>
 
+
 <template name="song">
   <div id="page">
     {{#with song}}
       <h1>{{title}}</h1>
       <p>Type: {{type}}</p>
-      <p>Year: {{year}}</p>
-      <p>Film name: {{filmName}}</p>
+      {{#if year}}
+        <p>Year: {{year}}</p>
+      {{else}}
+        <p>Year: Unknown</p>
+      {{/if}}
+      {{#if filmName}}
+        <p>Film name: {{filmName}}</p>
+      {{/if}}
       <p>Language: {{language}}</p>
       <p>Lyricists:
         {{#each lyricists}}
@@ -161,6 +173,7 @@
     {{/with}}
   </div>
 </template>
+
 
 <template name="people">
   <div id="page">
@@ -183,6 +196,7 @@
     </table>
   </div>
 </template>
+
 
 <template name="person">
   <div id="page">
